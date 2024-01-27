@@ -1,0 +1,41 @@
+version: '3'
+services:
+
+  db:
+    container_name: todo
+    image: postgres
+    volumes:
+      - ./data:/var/lib/pgsql/data
+    environment:
+      - POSTGRES_DB=api_db
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=test
+      - PGDATA=/var/lib/pgsql/data/pgdata
+
+  web:
+    container_name: Web_app
+    build: ./code
+    command: bash -c "python manage.py makemigrations &&
+            python manage.py migrate && python manage.py collectstatic --noinput &&
+            gunicorn todo.wsgi:application --bind 0.0.0.0:8001"
+    volumes:
+      - ./code:/code
+    environment:
+      - POSTGRES_DB=api_db
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=test
+    links:
+      - "db:db"
+    expose:
+      - "8001"
+
+  nginx:
+    container_name: NGINX_TODO
+    build: ./nginx
+    volumes:
+      - ./code/static:/todo/static
+      - ./code/media:/todo/media
+    ports:
+      - "8001:80"
+    links:
+      - "web:web"
