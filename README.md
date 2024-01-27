@@ -1,6 +1,6 @@
 # django_api
 
-https://github.com/yzajchenko/django_api_not_docker(со swagger, но без docker)
+https://github.com/yzajchenko/django_api_not_docker (со swagger, но без docker)
 
 Для запуска
 1) git clone https://github.com/yzajchenko/django_api.git
